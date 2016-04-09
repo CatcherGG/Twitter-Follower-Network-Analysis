@@ -25,7 +25,7 @@ head(ga.data)
 
 #### Followers:
 
-We've fetched information from CatcherGG\[Guy Gonen\] and his 134 followers. For each follower we fetched up to 200 possible followers and then dropped people which are not following CatcherGG \[In order to not exceed 200 nodes\].
+We've fetched information from CatcherGG\[Guy Gonen\] and his 134 followers. For each follower we fetched up to 200 possible followers and then dropped people which are not following CatcherGG In order to not exceed 200 nodes.
 
 ``` r
 V(g)$name
