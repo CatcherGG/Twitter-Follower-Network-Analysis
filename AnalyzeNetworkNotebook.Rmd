@@ -1,7 +1,7 @@
 ---
 title: "AnalyzeNetworkNotebook"
 author: "GuyGo and Ofri Masad"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
