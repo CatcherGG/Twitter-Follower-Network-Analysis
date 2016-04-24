@@ -1,0 +1,123 @@
+---
+title: "AnalyzeGraysAnatomyNetwork"
+author: "GuyGo and Ofri Masad"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(igraph)
+setwd("C:/Users/Guy Gonen/PycharmProjects/TweeterNetwork/")
+ga.data <- read.csv('edges_no_duplicates.csv', header = T)
+g <- graph.data.frame(ga.data,directed = F)
+g <- simplify(g)
+```
+
+
+# Network Analysis:
+### Reading the data
+The data is a csv files containing the graph edges of GuyGo twitter followers.
+And edge is represented by couple: {From, To}
+```{r read_data, cache=TRUE}
+head(ga.data)
+```
+### Data exploration:
+#### Followers:
+We've fetched information from CatcherGG[Guy Gonen] and his 134 followers.
+For each follower we fetched up to 200 possible followers and then dropped people which are not following CatcherGG In order to not exceed 200 nodes.
+```{r relations, cache=TRUE}
+V(g)$name
+```
+#### Number of Connections between followers and followers of followers:
+```{r number_of_relations, cache=TRUE}
+summary(g)
+```
+
+### Data-visualization:
+#### Basic representation:
+```{r basic, cache=TRUE}
+g$layout <- layout.fruchterman.reingold(g)
+plot(g)
+```  
+#### Basic representation without names [We'll continue without names from now on]:
+```{r basic_rep2, cache=TRUE}
+V(g)$label <- NA 
+g$layout <- layout.fruchterman.reingold(g)
+plot(g)
+```
+#### Degree score:
+```{r degree, cache=TRUE}
+degr.score <- degree(g)
+degr.score
+V(g)$size <- degree(g) * 0.3 
+plot(g)
+```
+
+#### Closeness centrality:
+```{r closeness_cent, cache=TRUE}
+clo <- closeness(g) 
+V(g)$color <- "gray"
+V(g)$size <- clo * 1000
+V(g)$label <- NA
+plot(g)
+clo
+which.max(clo)
+```  
+
+As expected, CatcherGG is the most central.
+
+
+#### Betweeness centrality.
+```{r betweeness_cent, cache=TRUE}
+btw <- betweenness(g) 
+V(g)$color <- "gray"
+V(g)$size <- btw/400
+V(g)$label <- NA
+plot(g)
+btw
+which.max(btw)
+```  
+
+As expected, CatcherGG is the most central.
+
+#### Eigenvector centrality.
+```{r eigenvector_cent, cache=TRUE}
+eig <- centr_eigen(g)
+V(g)$color <- "gray"
+V(g)$size <- eig$vector*15
+V(g)$label <- NA
+plot(g)
+eig$vector
+V(g)[which.max(V(g)$size)]
+```  
+
+As expected, CatcherGG is the most central.
+
+#### Community strucure via short random walks
+```{r random_walk_community, cache=TRUE}
+fc <- walktrap.community(g)
+memb <- membership(fc)
+plot(g, vertex.size=5, vertex.label=V(g)$name,vertex.color=memb+1, asp=FALSE)
+#number of communities and they size
+table(memb)
+#the modularity
+modularity(fc)
+```  
+
+
+#### Girvan-Newman community detection algorithm
+```{r Girvan_Newman_community, cache=TRUE}
+gnc <- edge.betweenness.community(g, directed=FALSE)
+memb2 <- membership(gnc)
+plot(g, vertex.size=5, vertex.label=V(g)$name,vertex.color=memb2+1, asp=FALSE)
+#number of communities and their size
+table(memb2)
+#the modularity
+modularity(gnc)
+```  
+
+
+### Insights:
+1. There are 7 disjoint cliques. When taking a closer look at the people in each cliques it was possible to easily tag them: University, Army, English / Hebrew twitter persons, ...
+2. It wasn't a suprise that CatcherGG would be in the middle since we know that everyone follows him.
+3. There is one clique which is made of people that almost has no followers, And they are connected with themselves and a few others. Some of them are bots and some of them are new people that are not active this days.
