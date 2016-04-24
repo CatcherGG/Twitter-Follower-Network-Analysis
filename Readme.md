@@ -1,4 +1,4 @@
-AnalyzeGraysAnatomyNetwork
+Analyze Twitter Network
 ================
 GuyGo and Ofri Masad
 

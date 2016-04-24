@@ -1,5 +1,5 @@
 ---
-title: "AnalyzeGraysAnatomyNetwork"
+title: "Analyze Twitter Network"
 author: "GuyGo and Ofri Masad"
 output: github_document
 ---
